@@ -3,7 +3,9 @@ package routes
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sachin-404/ZipLink/helpers"
 )
 
 type request struct {
@@ -29,9 +31,19 @@ func ShortenURL(c *fiber.Ctx) error {
 
 	//TODO: implement rate limiting
 
-	//TODO: check if input url is a valid url
+	//check if input url is a valid url
+	if !govalidator.IsURL(body.URL) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid URL"})
+	}
 
-	//TODO: check for domain error
+	//check for domain error
+	// if user wants to shorten domain i.e. localhost:3000, the program will enter in infinite loop
+	if !helpers.RemoveDomainError(body.URL) {
+		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"error": "You can't hack the system (:"})
+	}
 
-	//TODO: enforce https, SSL
+	//enforce https, SSL
+	body.URL = helpers.EnforceHTTP(body.URL)
+
+	return nil
 }
