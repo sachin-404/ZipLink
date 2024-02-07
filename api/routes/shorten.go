@@ -40,7 +40,6 @@ func ShortenURL(c *fiber.Ctx) error {
 	if err == redis.Nil {
 		_ = r2.Set(database.Ctx, c.IP(), os.Getenv("API_QUOTA"), 30*60*time.Second).Err()
 	} else {
-		value, _ = r2.Get(database.Ctx, c.IP()).Result()
 		valInt, _ := strconv.Atoi(value)
 		if valInt <= 0 {
 			limit, _ := r2.TTL(database.Ctx, c.IP()).Result()
@@ -64,6 +63,29 @@ func ShortenURL(c *fiber.Ctx) error {
 
 	//enforce https, SSL
 	body.URL = helpers.EnforceHTTP(body.URL)
+
+	// implement shortening logic
+	var id string
+	r := database.CreateClient(0)
+	defer r.Close()
+
+	val, _ := r.Get(database.Ctx, id).Result()
+	if val != "" {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": "This custom short URL not available",
+		})
+	}
+
+	if body.Expiry == 0 {
+		body.Expiry = 24
+	}
+
+	err = r.Set(database.Ctx, id, body.URL, body.Expiry*3600*time.Second).Err()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Unable to connect to server",
+		})
+	}
 
 	r2.Decr(database.Ctx, c.IP())
 
