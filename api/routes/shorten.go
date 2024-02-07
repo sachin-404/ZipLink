@@ -7,6 +7,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/sachin-404/ZipLink/database"
 	"github.com/sachin-404/ZipLink/helpers"
@@ -66,6 +67,13 @@ func ShortenURL(c *fiber.Ctx) error {
 
 	// implement shortening logic
 	var id string
+
+	if body.CustomShort == "" {
+		id = uuid.New().String()[:6]
+	} else {
+		id = body.CustomShort
+	}
+
 	r := database.CreateClient(0)
 	defer r.Close()
 
