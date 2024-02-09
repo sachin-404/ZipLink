@@ -1,0 +1,15 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "## About\n\n`ZipLink` is an URL shortener created by [Sachin Kant](https://github.com/sachin-404)\n\n- Source Code: \u003chttps://github.com/sachin-404/ZipLink\u003e ",
+        "title": "ZipLink API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "api/v1",
+    "paths": {}
+}
