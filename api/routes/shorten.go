@@ -27,6 +27,14 @@ type response struct {
 	XRateLimitReset time.Duration `json:"rate_limit_reset"`
 }
 
+// ShortenURL
+//
+//	@Summary		Create short url
+//	@Description	Create short url
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	docsobj.Request	true	"Query Parameters"
+//	@Router			/api/v1 [post]
 func ShortenURL(c *fiber.Ctx) error {
 	body := new(request)
 

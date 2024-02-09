@@ -24,8 +24,8 @@ func setupRoutes(app *fiber.App) {
 //	@version	1.0
 //	@description.markdown
 
-//	@BasePath	api/v1
-//	@schemes	http https
+// @BasePath	/
+// @schemes	http https
 func main() {
 	err := godotenv.Load()
 
